@@ -1,0 +1,46 @@
+#container {
+    margin: auto;
+    width: auto;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+   
+}
+
+@media (min-width: 800px) {
+	#container {
+		width: 800px;
+	}
+}
+body{
+    background-color: rgb(7, 56, 46);
+}
+
+.strongStrength{
+    color: #00ff00;
+   }
+header{
+    font-weight: bold;
+}
+.mediumStrength{
+    color: #ffaa00;
+}
+
+.weakStrength{
+    color: #ff1500;
+}
+.passswordsNotMatch{
+    color: #ff1500;
+}
+.secondPasswordNotMatch{
+    border: 2px solid red;	
+}
+
+.passBoxStrongStrength{
+    border: 2px solid #00ff00;	
+   }
+.passBoxMediumStrength{
+    border: 2px solid #ffaa00;	
+}
+.passBoxWeakStrength{
+    border: 2px solid #ff1500;		
+}

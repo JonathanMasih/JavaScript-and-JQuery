@@ -1,0 +1,177 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password with JavaScript</title>
+    <link rel="stylesheet" href="webpageStyle.css">
+</head>
+<body> 
+    <script src="functions.js"></script>
+    <script>
+        var mybody = document.body;
+        var myDivPage = document.createElement("div");
+        myDivPage.setAttribute("id", "container");
+        mybody.appendChild(myDivPage);
+        
+        //header with info and link
+        var myHeader = document.createElement("header");
+        myHeader.innerHTML = "Please enter a passowrd to see the strength of it Adapted from:"
+        var myLink = document.createElement("a");
+        myLink.href = "http://www.uic.edu/apps/strong-password/";
+        myLink.innerHTML = "www.uic.edu";
+        myHeader.appendChild(document.createElement("br"));
+        myHeader.appendChild(myLink);
+
+        myDivPage.appendChild(myHeader);
+       
+        var newForm = document.createElement("form");
+        newForm.setAttribute("id", "insert_form")
+        myDivPage.appendChild(newForm);
+        
+        //all the forms needed
+        newForm.appendChild(makeInput("text","username","","User Name: "));
+		newForm.appendChild(makeInput("password","password","","Password: "));
+		newForm.appendChild(makeInput("password","reEnterPassword","","Re-Enter Password: "));
+        newForm.appendChild(makeInput("submit","insert_button","Submit"));
+        //tag to print out the message about the strength of the password
+        var passwordCheckMessage = document.createElement("span");
+        passwordCheckMessage.setAttribute("id","PasswordStatus");
+        myDivPage.appendChild(passwordCheckMessage);
+  
+        //adding a break in between print message and genrator button 
+        myDivPage.appendChild(document.createElement("br"));
+        //button for the random password generrator
+        myDivPage.appendChild(makeInput("submit","randomPassword","Genrate Random Password"));
+        
+ 
+
+        function checkForm(event){
+            var password1 = document.getElementById("password");
+            var password2 = document.getElementById("reEnterPassword");
+            var message = document.getElementById("PasswordStatus");
+              
+            //Checks if the passwords match and prints an message 
+            if(password1.value !== password2.value || password1.value.length != password2.value.length) {
+                event.preventDefault();
+                message.setAttribute("class","passswordsNotMatch");
+                message.innerHTML = "Passwords to not match";
+                password2.setAttribute("class","secondPasswordNotMatch");
+            }else{  
+            var passwordtotalPoints =  checkPasswordStrength(password1.value);
+            if(passwordtotalPoints >= 0 && passwordtotalPoints <= 20){
+                event.preventDefault();
+                message.setAttribute("class","weakStrength");
+                password1.setAttribute("class","passBoxWeakStrength");
+                password2.setAttribute("class","passBoxWeakStrength");
+               message.innerHTML = "The password strength is weak. Total strength:" + passwordtotalPoints ;
+            }else if(passwordtotalPoints >= 21 && passwordtotalPoints <= 40){
+                event.preventDefault();
+                message.setAttribute("class" ,"mediumStrength");
+                password1.setAttribute("class","passBoxMediumStrength");
+                password2.setAttribute("class","passBoxMediumStrength");
+               message.innerHTML = "The password strength is medium. Total strength:" + passwordtotalPoints ;
+            }else{
+                event.preventDefault();  
+                message.setAttribute("class" ,"strongStrength");
+                password1.setAttribute("class","passBoxStrongStrength");
+                password2.setAttribute("class","passBoxStrongStrength");
+                message.innerHTML = "The password strength is strong. Total strength: " + passwordtotalPoints;
+                 }
+                }  
+            }
+
+             function genrateRandomPassword(){
+               // declare all characters
+               const characters ="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv" +
+               "wxyz0123456789~!@#$%^&*()_+[]{}\|;:'\",.<>?/";
+               var passwordOverFourty = false;
+               var randomPass = "";
+               var passwordStrength = 0;
+               var passlength = Math.floor((Math.random() * 12) + 8);
+               for ( var i = 0; i < passlength; i++ ) {
+                randomPass += characters.charAt(Math.floor(Math.random() * characters.length));
+               }
+               while(true){
+                passwordStrength = checkPasswordStrength(randomPass);
+                if( passwordStrength >= 40){
+                    break;
+                }else{
+                    randomPass = "";
+                    for ( var i = 0; i < 8; i++ ) {
+                        randomPass += characters.charAt(Math.floor(Math.random() * characters.length));
+                       }
+                }
+               }
+
+                alert(randomPass + " This password has a strength of: " + passwordStrength);
+             }
+              
+              function checkPasswordStrength(password) {
+                  // If the passwords match 
+               var passwordtotalPoints = 0;
+               //number of characters in the password
+               var N = password.length;
+               //number of Uppercase characters in the password
+               var U = 0; 
+               //number of Lowercase characters in the password
+               var L = 0;
+               //number of Digits in the password
+               var D = 0;
+               //number Of special characters in the password
+                var S = 0;
+               //number of middle Digits in the password
+               var mD = 0;
+               //Number of Middle Special charaters in the password
+               var mS = 0;
+               for (var i = 0; i < N; i++) {
+                     if (password[i] >= 'A' && password[i] <= 'Z') {
+                         U++; 
+                     }else if (password[i]>= 'a' && password[i] <= 'z'){ 
+                         L++; 
+                     }else if (password[i] >= '0' && password[i] <= '9'){
+                         D++; 
+                         if(i != 0 && i < N - 1){
+                         mD++; 
+                         }
+                     } else{
+                         S++;
+                         if(i != 0 && i < N - 1){
+                            
+                          mS++;
+                         }
+                     }  }
+               //Adding points based on characters in the password
+               passwordtotalPoints = N * 4;
+               //Adding points based on Uppercase characters in the password
+               passwordtotalPoints += (N-U) * 2;
+               //Adding points based on Lowercase characters in the password
+               passwordtotalPoints += (N-L) * 2;
+               //If  the  password  only  contains  digits,  add  0  points,  otherwise 
+               //the number of digits adds (D * 4) points
+                if( N != D){
+                passwordtotalPoints += D * 4;
+                }       
+                //Number of symbols adds (S * 6) points  
+                passwordtotalPoints += S * 6;
+               
+               //The  number  of  middle  digits  (D')  or  symbols  (S')  (not  at  the 
+               //very beginning or very end) adds (D'+ S')*2 points.
+               passwordtotalPoints += (mD + mS) * 2;   
+
+               return passwordtotalPoints;
+              }
+ 
+              
+              //Adding evertListener to the from tag
+		    var formHandle = document.getElementById("insert_form");
+             formHandle.addEventListener("submit",checkForm);
+            
+             //adding listener to the random button genrator
+             document.getElementById("randomPassword").addEventListener("click",genrateRandomPassword);
+           
+            document.querySelector("#password").addEventListener("change",function(event){ 
+            document.querySelector("#password").setAttribute("class","");
+            document.querySelector("#reenterPassword").setAttribute("class","");});
+    </script>
+   
+</body>
+</html>
