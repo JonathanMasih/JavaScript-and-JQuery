@@ -1,0 +1,190 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Password with JavaScript</title>
+    <link rel="stylesheet" href="webpageStyle.css">
+</head>
+
+<body>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script src="functions.js"></script>
+    <script>
+        var $mybody = $("body");
+        var $myDivPage = $("<div></div>");
+        $myDivPage.attr("id", "container");
+        $mybody.append($myDivPage);
+
+        //header with info and link
+        var $myHeader = $("<header></header>");
+        $myHeader.text("Please enter a password to see the strength of it Adapted from:");
+        var $myLink = $("<a></a>");
+        $myLink.attr("href", "http://www.uic.edu/apps/strong-password/");
+        $myLink.text("www.uic.edu");
+        $myHeader.append($("<br>"));
+        $myHeader.append($myLink);
+
+        $myDivPage.append($myHeader);
+
+        var $newForm = $("<form></form>");
+        $newForm.attr("id", "insert_form")
+        $myDivPage.append($newForm);
+
+        //all the forms needed
+        $newForm.append(makeInput("text", "username", "", "User Name: "));
+        $newForm.append(makeInput("password", "password", "", "Password: "));
+        $newForm.append(makeInput("password", "reEnterPassword", "", "Re-Enter Password: "));
+        $newForm.append(makeInput("submit", "insert_button", "Submit"));
+        //tag to print out the message about the strength of the password
+        var $passwordCheckMessage = $("<span></span>");
+        $passwordCheckMessage.attr("id", "PasswordStatus");
+        $myDivPage.append($passwordCheckMessage);
+
+        //adding a break in between print message and genrator button 
+        $myDivPage.append($("<br>"));
+        //button for the random password generrator
+        $myDivPage.append(makeInput("submit", "randomPassword", "Genrate Random Password"));
+
+
+
+
+        function checkForm(event) {
+
+            var $password1 = $("#password");
+            var $password2 = $("#reEnterPassword");
+            var $message = $("#PasswordStatus");
+
+            //Checks if the passwords match and prints an message 
+            if ($password1.val() !== $password2.val() || $password1.val().length != $password2.val().length) {
+                event.preventDefault();
+                $message.attr("class", "passswordsNotMatch");
+                $message.text("Passwords to not match");
+                $password2.attr("class", "secondPasswordNotMatch");
+            } else {
+                var $passwordtotalPoints = checkPasswordStrength($password1.val());
+                if ($passwordtotalPoints >= 0 && $passwordtotalPoints <= 20) {
+                    event.preventDefault();
+                    $message.attr("class", "weakStrength");
+                    $password1.attr("class", "passBoxWeakStrength");
+                    $password2.attr("class", "passBoxWeakStrength");
+                    $message.text("The password strength is weak. Total strength:" + $passwordtotalPoints);
+                } else if ($passwordtotalPoints >= 21 && $passwordtotalPoints <= 40) {
+                    event.preventDefault();
+                    $message.attr("class", "mediumStrength");
+                    $password1.attr("class", "passBoxMediumStrength");
+                    $password2.attr("class", "passBoxMediumStrength");
+                    $message.text("The password strength is medium. Total strength:" + $passwordtotalPoints);
+                } else {
+                    event.preventDefault();
+                    $message.attr("class", "strongStrength");
+                    $password1.attr("class", "passBoxStrongStrength");
+                    $password2.attr("class", "passBoxStrongStrength");
+                    $message.text("The password strength is strong. Total strength: " + $passwordtotalPoints);
+                }
+            }
+        }
+
+        function genrateRandomPassword() {
+            // declare all characters
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv" +
+                "wxyz0123456789~!@#$%^&*()_+[]{}\|;:'\",.<>?/";
+            var $passwordOverFourty = false;
+            var $randomPass = "";
+            var $passwordStrength = 0;
+            var $passlength = Math.floor((Math.random() * 12) + 8);
+            for (var i = 0; i < $passlength; i++) {
+                $randomPass += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            while (true) {
+                $passwordStrength = checkPasswordStrength($randomPass);
+                if ($passwordStrength >= 40) {
+                    break;
+                } else {
+                    $randomPass = "";
+                    for (var i = 0; i < 8; i++) {
+                        $randomPass += characters.charAt(Math.floor(Math.random() * characters.length));
+                    }
+                }
+            }
+
+            alert($randomPass + " This password has a strength of: " + $passwordStrength);
+        }
+
+        function checkPasswordStrength($password) {
+            // If the passwords match 
+
+            var $passwordtotalPoints = 0;
+            //number of characters in the password
+            var N = $password.length;
+            //number of Uppercase characters in the password
+            var U = 0;
+            //number of Lowercase characters in the password
+            var L = 0;
+            //number of Digits in the password
+            var D = 0;
+            //number Of special characters in the password
+            var S = 0;
+            //number of middle Digits in the password
+            var mD = 0;
+            //Number of Middle Special charaters in the password
+            var mS = 0;
+            for (var i = 0; i < N; i++) {
+                if ($password[i] >= 'A' && $password[i] <= 'Z') {
+                    U++;
+                } else if ($password[i] >= 'a' && $password[i] <= 'z') {
+                    L++;
+                } else if ($password[i] >= '0' && $password[i] <= '9') {
+                    D++;
+                    if (i != 0 && i < N - 1) {
+                        mD++;
+                    }
+                } else {
+                    S++;
+                    if (i != 0 && i < N - 1) {
+
+                        mS++;
+                    }
+                }
+            }
+            //Adding points based on characters in the password
+            $passwordtotalPoints = N * 4;
+            //Adding points based on Uppercase characters in the password
+            $passwordtotalPoints += (N - U) * 2;
+            //Adding points based on Lowercase characters in the password
+            $passwordtotalPoints += (N - L) * 2;
+            //If  the  password  only  contains  digits,  add  0  points,  otherwise 
+            //the number of digits adds (D * 4) points
+            if (N != D) {
+                $passwordtotalPoints += D * 4;
+            }
+            //Number of symbols adds (S * 6) points  
+            $passwordtotalPoints += S * 6;
+
+            //The  number  of  middle  digits  (D')  or  symbols  (S')  (not  at  the 
+            //very beginning or very end) adds (D'+ S')*2 points.
+            $passwordtotalPoints += (mD + mS) * 2;
+
+            return $passwordtotalPoints;
+        }
+
+
+        //Adding evertListener to the from tag
+        $("#insert_button").click(checkForm);
+        //formHandle.addEventListener("submit",checkForm);
+
+        //adding listener to the random button genrator
+       $("#randomPassword").click(genrateRandomPassword);
+
+        $("#password").change(function (event) {
+            $("#password").attr("class", "");
+            $("#reenterPassword").attr("class", "");
+        });
+
+
+    
+    </script>
+
+</body>
+
+</html>
