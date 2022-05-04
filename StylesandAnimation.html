@@ -1,0 +1,85 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="jquery-3.6.0.js"></script>
+
+
+</head>
+
+<body>
+    <div>
+        <button id="show-btn">show</button>
+        <button id="hide-btn">hide</button>
+        <button id="toggle-btn">toggle</button>
+    </div>
+    <div>
+        <button id="fadein-btn">fadeIn</button>
+        <button id="fadeout-btn">fadeOut</button>
+        <button id="fadetoggle-btn">fadeToggle</button>
+    </div>
+    <div>
+        <button id="slidedown-btn">slideDown</button>
+        <button id="slideup-btn">slideUp</button>
+        <button id="slidetoggle-btn">slideToggle</button>
+    </div>
+    <div>
+        <button id="walk">Shrink Ginger</button>
+    </div>
+
+    <img id="Ginger" src="Ginger.jpg" width="240" alt="Dog picture">
+
+    <script>let $img = $("img");
+
+        $("#show-btn").click(function () {
+            $img.show("normal");
+        });
+
+        $("#hide-btn").click(function () {
+            $img.hide("normal");
+        });
+
+        $("#toggle-btn").click(function () {
+            $img.toggle("normal");
+        });
+
+        $("#fadein-btn").click(function () {
+            $img.fadeIn("normal");
+        });
+
+        $("#fadeout-btn").click(function () {
+            $img.fadeOut("normal");
+        });
+
+        $("#fadetoggle-btn").click(function () {
+            $img.fadeToggle("normal");
+        });
+
+        $("#slidedown-btn").click(function () {
+            $img.slideDown("normal");
+        });
+
+        $("#slideup-btn").click(function () {
+            $img.slideUp("normal");
+        });
+
+        $("#slidetoggle-btn").click(function () {
+            $img.slideToggle("normal");
+        });
+
+        $("#walk").click(function () {
+           $img.animate({
+                left: '250px',
+                height: '150px',
+                width: '150px'
+            });
+        });
+
+    </script>
+</body>
+
+</html>
